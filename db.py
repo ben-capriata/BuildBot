@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 from config import DB_PATH
 
@@ -111,6 +111,20 @@ def get_recent_sessions(limit=5):
     cur.execute(
         "SELECT * FROM build_sessions ORDER BY id DESC LIMIT ?",
         (limit,),
+    )
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_sessions_since(days: int = 7) -> list:
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    conn = _connect()
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM build_sessions WHERE date >= ? ORDER BY date ASC",
+        (cutoff,),
     )
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()

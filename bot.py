@@ -9,6 +9,7 @@ from handlers.chat import chat_message
 from handlers.plan import plan_command
 from handlers.reflect import get_reflect_handler
 from handlers.tasks import add_command, done_command, tasks_command
+from handlers.weekly import weekly_command
 from llm import last_provider
 from scheduler import start_scheduler
 
@@ -31,6 +32,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "/add <task> — Add a new task\n"
         "/done <id> — Mark a task complete\n"
         "/reflect — Start a post-build reflection\n"
+        "/weekly — Weekly build digest\n"
         "/status — Bot status"
     )
 
@@ -71,6 +73,7 @@ def main():
     app.add_handler(CommandHandler("tasks", tasks_command))
     app.add_handler(CommandHandler("add", add_command))
     app.add_handler(CommandHandler("done", done_command))
+    app.add_handler(CommandHandler("weekly", weekly_command))
     app.add_handler(CommandHandler("status", status_command))
     # Conversational fallback — must be last so commands/ConversationHandler take priority
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat_message))
